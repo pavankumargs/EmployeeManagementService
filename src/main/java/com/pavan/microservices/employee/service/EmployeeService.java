@@ -106,4 +106,16 @@ public class EmployeeService {
 				.orElseThrow(() -> new EmployeeNotFoundException("Employee ID " + id + " Not Found"));
 		employeeRepository.delete(employee);
 	}
+	
+	public DepartmentDTO createDepartment(DepartmentDTO departmentDTO) {
+		return restTemplate.postForObject("http://localhost:8082/department", departmentDTO, DepartmentDTO.class);
+	}
+	
+	public void updateDepartment(Long departmentId, DepartmentDTO departmentDTO) {
+		restTemplate.put("http://localhost:8082/department/"+departmentId, departmentDTO);
+	}
+	
+	public void deleteDepartment(Long departmentId) {
+		restTemplate.delete("http://localhost:8082/department/"+departmentId);
+	}
 }

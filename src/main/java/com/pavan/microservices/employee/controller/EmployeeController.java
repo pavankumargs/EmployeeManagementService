@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pavan.microservices.employee.dto.DepartmentDTO;
 import com.pavan.microservices.employee.dto.EmployeeDepartmentResponseDTO;
 import com.pavan.microservices.employee.dto.EmployeeResponseDTO;
 import com.pavan.microservices.employee.entity.Employee;
@@ -58,9 +59,34 @@ public class EmployeeController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	
+	/*
+	 * below all are
+	 * RestTemplate calls
+	 */
+	
 	@GetMapping("/department/{id}")
 	public ResponseEntity<EmployeeDepartmentResponseDTO> getEmployeeWithDepartment(@PathVariable Long id){
 		EmployeeDepartmentResponseDTO response = employeeService.getEmployeeWithDepartment(id);
 		return new ResponseEntity<EmployeeDepartmentResponseDTO>(response,HttpStatus.OK);
 	}
+	
+	@PostMapping("/department")
+	public ResponseEntity<DepartmentDTO> createDepartment(@RequestBody DepartmentDTO departmentDTO){
+		DepartmentDTO response = employeeService.createDepartment(departmentDTO);
+		return new ResponseEntity<>(response,HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/department/{id}")
+	public ResponseEntity<String> updateDepartment(@PathVariable Long id, @RequestBody DepartmentDTO departmentDTO){
+		employeeService.updateDepartment(id, departmentDTO);
+		return new ResponseEntity("Department Updated Successfully", HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/department/{id}")
+	public ResponseEntity<String> deleteDepartment(@PathVariable Long id){
+		employeeService.deleteDepartment(id);
+		return new ResponseEntity<>("Department Deleted Successfully", HttpStatus.NO_CONTENT);
+	}
+	
 }
