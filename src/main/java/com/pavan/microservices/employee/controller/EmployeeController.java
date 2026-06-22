@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pavan.microservices.employee.dto.EmployeeDepartmentResponseDTO;
 import com.pavan.microservices.employee.dto.EmployeeResponseDTO;
 import com.pavan.microservices.employee.entity.Employee;
 import com.pavan.microservices.employee.service.EmployeeService;
@@ -55,5 +56,11 @@ public class EmployeeController {
 	public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
 		employeeService.deleteEmployeeById(id);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping("/department/{id}")
+	public ResponseEntity<EmployeeDepartmentResponseDTO> getEmployeeWithDepartment(@PathVariable Long id){
+		EmployeeDepartmentResponseDTO response = employeeService.getEmployeeWithDepartment(id);
+		return new ResponseEntity<EmployeeDepartmentResponseDTO>(response,HttpStatus.OK);
 	}
 }

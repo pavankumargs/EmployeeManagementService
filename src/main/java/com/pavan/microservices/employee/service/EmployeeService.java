@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import com.pavan.microservices.employee.dto.DepartmentDTO;
+import com.pavan.microservices.employee.dto.EmployeeDepartmentResponseDTO;
 import com.pavan.microservices.employee.dto.EmployeeResponseDTO;
 import com.pavan.microservices.employee.entity.Employee;
 import com.pavan.microservices.employee.exception.EmployeeNotFoundException;
@@ -16,6 +19,9 @@ public class EmployeeService {
 
 	@Autowired
 	private EmployeeRepository employeeRepository;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	public Employee saveEmployee(Employee employee) {
 		return employeeRepository.save(employee);
@@ -34,7 +40,18 @@ public class EmployeeService {
 		employeeDTO.setDepartmentId(employee.getDepartmentId());
 		return employeeDTO;
 	}
-
+	
+	public EmployeeDepartmentResponseDTO getEmployeeWithDepartment(Long id) {
+		Employee employee = employeeRepository.findById(id).orElseThrow(()->new EmployeeNotFoundException("Employee ID "+id+" Not Found"));
+		DepartmentDTO departmentDTO = restTemplate.getForObject("http://localhost:8082/department/"+employee.getDepartmentId(), DepartmentDTO.class);
+		EmployeeDepartmentResponseDTO res = new EmployeeDepartmentResponseDTO();
+		res.setEmployeeId(employee.getEmployeeId());
+		res.setEmployeeName(employee.getEmployeeName());
+		res.setEmail(employee.getEmail());
+		res.setDepartment(departmentDTO);
+		return res;
+	}
+	
 	public List<EmployeeResponseDTO> getAllEmployees() {
 		List<Employee> employees = employeeRepository.findAll();
 
